@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+  <!-- 注定配置文件位置，以classpath为基准 -->	
+  <properties resource="jdbc.properties"/>
+  
+   <!-- 使用Log4j日志 -->
+  <settings>
+		<setting name="logImpl" value="LOG4J"></setting>
+  </settings>
+  
+  <!-- 别名，配置后可以使用别名替代完整限定名 -->
+  <typeAliases>
+  	<typeAlias alias="User" type="com.paditang.domain.User"/>
+  </typeAliases>
+  
+  
+  
+  <!-- 在已执行映射语句执行过程中的某一点拦截调用 -->
+  <plugins>
+  	<plugin interceptor="com.paditang.plugin.ExamplePlugin">
+  		<property name="someProperty" value="100"/>
+  	</plugin>
+  </plugins>
+  
+  
+ 
+  
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <!-- 此处数据源可以配置成其他数据源 -->
+      <dataSource type="POOLED">
+        <property name="driver" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="com/paditang/mapping/userMapper.xml"/>
+  </mappers>
+</configuration>

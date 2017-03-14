@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+ <!-- 为这个mapper指定一个唯一的namespace,默认为包名+mapper名-->
+  <mapper namespace="com.paditang.mapping.userMapper">
+  
+  
+  	  <!-- 如果列名不匹配 -->
+  	  <resultMap type="User" id="userResultMap">
+  	  	<id property="id" column="id"/>
+  	  	<result property="name" column="name" />
+  	  	<result property="location" column="location" />
+  	  </resultMap>	
+  		
+      <!-- 	id：为调用时的唯一标示，重复时会报错
+      		parameterType：查询时使用的参数类型
+      		resultType：查询返回的结果集类型 。注意如果是集合情形，那应该是集合可以包含的类型，而不能是集合本身。
+      -->
+     <select id="getUser" parameterType="int" 
+         resultType="User">
+         select * from t_user where id=#{id}
+     </select>
+     
+     <select id="getUserMap" parameterType="int" 
+         resultMap="userResultMap">
+         select * from t_user where id=#{id}
+     </select>
+     
+     <insert id="insertUser" parameterType="User" useGeneratedKeys="true"
+     	keyProperty="id"
+     	flushCache="true" statementType="PREPARED" timeout="20">
+     	insert into t_user(name,location)values
+     	<!-- 多行插入
+     		<foreach item = "item" collection="list" seperator=",">
+     			(#{item.name},#{item.location})
+     		</foreach>
+     	 -->
+     	(#{name},#{location})
+     </insert>
+     	
+     <update id="updateUser" parameterType="User"
+     	flushCache="true" statementType="PREPARED" timeout="20">
+     	update t_user set
+     	name = #{name},
+     	location = #{location}
+     	where id = #{id}
+     </update>
+     	
+     <delete id="deleteUser" parameterType="int"
+     	flushCache="true" statementType="PREPARED" timeout="20">
+     	delete from t_user
+     	where id = #{id}
+     </delete>
+     
+ </mapper>
+
