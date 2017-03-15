@@ -42,6 +42,6 @@
     </environment>
   </environments>
   <mappers>
-    <mapper resource="com/paditang/mapping/userMapper.xml"/>
+    <mapper resource="com/paditang/mapping/UserMapper.xml"/>
   </mappers>
 </configuration>
