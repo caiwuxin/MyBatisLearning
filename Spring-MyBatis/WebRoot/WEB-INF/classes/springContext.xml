@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 扫描有@component @controller @service的类包并将其归入bean内 -->
+	<context:component-scan base-package="com.paditang.dao"/>
+	<context:component-scan base-package="com.paditang.service"/>
+	
+	  
+	<!-- 加载spring中的资源文件 -->
+	 <context:property-placeholder location="classpath:jdbc.properties" />
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"	
+		p:driverClassName="net.sourceforge.jtds.jdbc.Driver"
+		p:url="jdbc:jtds:sqlserver://localhost:1433;DatabaseName=test_api"
+		p:username="sa"
+		p:password="password">
+	</bean>
+		
+	<!-- 获取MyBatis sqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref="dataSource"
+		p:configLocation="classpath:MyBatis-conf.xml"
+		p:mapperLocations="classpath:com/paditang/mapping/*.xml"><!-- 扫描Mapper文件 -->
+	</bean>
+	
+	<!-- 使用提供的template -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+	
+	<!-- 扫描直接使用mapper接口类操作dao -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+		p:sqlSessionFactory-ref="sqlSessionFactory"
+		p:basePackage="com.paditang.mapping">
+		
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+	<!-- 配置基于注解的声明式事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+</beans>
