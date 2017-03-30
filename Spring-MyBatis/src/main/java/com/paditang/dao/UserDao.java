@@ -18,4 +18,10 @@ public class UserDao {
 	public String getLocationByUserName(String name){
 		return userMapper.getLocationByUserName(name);
 	}
+	public int insertUser(User user){
+		return userMapper.insertUser(user);
+	}
+	public void deleteUser(int UserId){
+		userMapper.deleteUser(UserId);
+	}
 }

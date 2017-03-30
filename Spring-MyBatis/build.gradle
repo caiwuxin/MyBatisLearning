@@ -53,6 +53,18 @@ dependencies{
 	compile "org.springframework:spring-jdbc:$springVersion"
 	
 	compile "javax.servlet:jstl:1.2"
+
+	compile "com.fasterxml.jackson.core:jackson-databind:2.8.7"
+	compile "com.fasterxml.jackson.core:jackson-annotations:2.8.7"
+
+	// https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
+	compile "org.hibernate:hibernate-validator:5.4.1.Final"
+
+	// https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
+	compile "commons-fileupload:commons-fileupload:1.3.2"
+
+
+
 }
 
 //  Project Facets
@@ -67,6 +79,10 @@ eclipse {
             facet name: 'wst.jsdt.web', version: '1.0'
         }
     }
+    /*classpath {          
+            downloadSources=true
+            downloadJavadoc=true
+     }*/
 }
 
 //定义任务将下载的jar包拷贝到WebContent/WEB-INF的lib文件夹下

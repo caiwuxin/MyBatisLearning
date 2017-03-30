@@ -15,10 +15,111 @@
         http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd">
+    
+    <!-- 简化配置，并且可以添加响应的额外配置 -->
+    <mvc:annotation-driven validator="validator"/>
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="false">
+            <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <!-- 这里顺序不能反，一定先写text/html,不然ie下出现下载提示 -->
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+    <!-- 配置静态资源和动态请求 -->
+    <!-- <mvc:default-servlet-handler/> -->
+    <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/" 
+    	cache-period="31536000"/>
+	
 	<context:component-scan base-package="com.paditang.controller"/><!-- 在mvc中扫描controller -->
+
+	<!-- mvc:annotation会自动生成这个bean -->
+	<bean id="validator"
+	class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<!-- 校验器，使用hibernate校验器 -->
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 指定校验使用的资源文件，在文件中配置校验错误信息，如果不指定则默认使用classpath下面的ValidationMessages.properties文件 -->
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	<!-- 校验错误信息配置文件 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<!-- 资源文件名 -->
+		<property name="basenames">
+			<list>
+				<value>classpath:/validateMsg/CustomValidationMessage.properties</value>
+			</list>
+		</property>
+		<!-- 资源文件编码格式 -->
+		<property name="fileEncodings" value="utf-8" />
+		<!-- 对资源文件内容缓存时间，单位秒 -->
+		<property name="cacheSeconds" value="120" />
+	</bean>
+	
+	<!-- 自定义类型格式转换，使用时，添加到mvc:annotation/>中即可
+	<bean id="conversationService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+            <set>
+                <bean class="org.example.MyConverter"/>
+            </set>
+        </property>
+        <property name="formatters">
+            <set>
+                <bean class="org.example.MyFormatter"/>
+                <bean class="org.example.MyAnnotationFormatterFactory"/>
+            </set>
+        </property>
+        <property name="formatterRegistrars">
+            <set>
+                <bean class="org.example.MyFormatterRegistrar"/>
+            </set>
+        </property>
+	</bean>
+	 -->
+	
+	<!-- 可自定义添加消息类型转换，如果想简化配置 可考虑使用<mvc:annotation-driven/> -->
+	<!-- 配置request参数绑定，可以解析Json类型的参数 -->
+	<!-- <bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping ">
+	</bean>
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/html;charset=UTF-8</value>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+			</list>
+		</property>
+	</bean>   -->
+	
+	<mvc:interceptors>
+		<bean class="com.paditang.interceptor.BaseInterceptor"/>
+	</mvc:interceptors>
+	
+	
+	<!-- 视图解析器 -->
 	<!--  对模型视图名称的解析，即在模型视图名称添加前后缀--><!-- modelAndView 里的参数。根据视图逻辑，解析成/WEB-INF/jsp/视图逻辑.jsp -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" 
 		p:viewClass="org.springframework.web.servlet.view.JstlView"
         p:prefix="/WEB-INF/jsp/" 
-        p:suffix=".jsp"/>  
+        p:suffix=".jsp"/>
+        
+
+
 </beans>

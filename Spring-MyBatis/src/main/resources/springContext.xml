@@ -26,7 +26,7 @@
 		p:driverClassName="net.sourceforge.jtds.jdbc.Driver"
 		p:url="jdbc:jtds:sqlserver://localhost:1433;DatabaseName=test_api"
 		p:username="sa"
-		p:password="password">
+		p:password="19961021!cwx">
 	</bean>
 		
 	<!-- 获取MyBatis sqlSessionFactory -->
@@ -47,6 +47,12 @@
 		p:basePackage="com.paditang.mapping">
 		
 	</bean>
+	<!-- 定义上传组件 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="UTF-8"
+		p:maxUploadSize="5242880"
+		p:uploadTempDir="upload/temp/"/>
 	
 	<!-- 配置事务管理器 -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

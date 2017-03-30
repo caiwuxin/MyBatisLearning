@@ -23,4 +23,14 @@ public class UserServiceImpl implements UserService{
 		return userDao.getLocationByUserName(name);
 	}
 
+	@Override
+	public int insertUser(User user) {
+		return userDao.insertUser(user);
+	}
+
+	@Override
+	public void delelteUser(int UserId) {
+		userDao.deleteUser(UserId);
+	}
+
 }
